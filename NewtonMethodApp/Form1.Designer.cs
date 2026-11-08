@@ -7,6 +7,8 @@
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem plotMenuItem;
         private System.Windows.Forms.ToolStripMenuItem calcMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem stepMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem resetStepMenuItem;
         private System.Windows.Forms.ToolStripMenuItem clearMenuItem;
 
         private System.Windows.Forms.TextBox txtA;
@@ -14,7 +16,8 @@
         private System.Windows.Forms.TextBox txtE;
         private System.Windows.Forms.TextBox txtX0;
         private System.Windows.Forms.TextBox txtF;
-        private System.Windows.Forms.Label lblA, lblB, lblE, lblX0, lblF;
+        private System.Windows.Forms.Label lblA, lblB, lblE, lblX0, lblF, lblTarget;
+        private System.Windows.Forms.ComboBox cmbTarget;
 
         private System.Windows.Forms.Button btnPlot;
         private System.Windows.Forms.Button btnCalculate;
@@ -35,6 +38,8 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.plotMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.calcMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.stepMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.resetStepMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.clearMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 
             this.lblA = new System.Windows.Forms.Label();
@@ -42,12 +47,14 @@
             this.lblE = new System.Windows.Forms.Label();
             this.lblX0 = new System.Windows.Forms.Label();
             this.lblF = new System.Windows.Forms.Label();
+            this.lblTarget = new System.Windows.Forms.Label();
 
             this.txtA = new System.Windows.Forms.TextBox();
             this.txtB = new System.Windows.Forms.TextBox();
             this.txtE = new System.Windows.Forms.TextBox();
             this.txtX0 = new System.Windows.Forms.TextBox();
             this.txtF = new System.Windows.Forms.TextBox();
+            this.cmbTarget = new System.Windows.Forms.ComboBox();
 
             this.btnPlot = new System.Windows.Forms.Button();
             this.btnCalculate = new System.Windows.Forms.Button();
@@ -58,7 +65,11 @@
 
             // menuStrip1
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-                this.plotMenuItem, this.calcMenuItem, this.clearMenuItem});
+                this.plotMenuItem, this.calcMenuItem,
+                new System.Windows.Forms.ToolStripSeparator(),
+                this.stepMenuItem, this.resetStepMenuItem,
+                new System.Windows.Forms.ToolStripSeparator(),
+                this.clearMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(955, 24);
@@ -71,6 +82,16 @@
             this.calcMenuItem.Text = "Рассчитать";
             this.calcMenuItem.Click += new System.EventHandler(this.calcMenuItem_Click);
 
+            this.stepMenuItem.Name = "stepMenuItem";
+            this.stepMenuItem.Text = "Следующий шаг";
+            this.stepMenuItem.Enabled = false;
+            this.stepMenuItem.Click += new System.EventHandler(this.stepMenuItem_Click);
+
+            this.resetStepMenuItem.Name = "resetStepMenuItem";
+            this.resetStepMenuItem.Text = "Сбросить шаги";
+            this.resetStepMenuItem.Enabled = false;
+            this.resetStepMenuItem.Click += new System.EventHandler(this.resetStepMenuItem_Click);
+
             this.clearMenuItem.Name = "clearMenuItem";
             this.clearMenuItem.Text = "Очистить";
             this.clearMenuItem.Click += new System.EventHandler(this.clearMenuItem_Click);
@@ -81,6 +102,7 @@
             this.lblE.Text = "e:"; this.lblE.Location = new System.Drawing.Point(350, 40); this.lblE.AutoSize = true;
             this.lblX0.Text = "x0:"; this.lblX0.Location = new System.Drawing.Point(12, 75); this.lblX0.AutoSize = true;
             this.lblF.Text = "f(x):"; this.lblF.Location = new System.Drawing.Point(12, 110); this.lblF.AutoSize = true;
+            this.lblTarget.Text = "Искать:"; this.lblTarget.Location = new System.Drawing.Point(200, 75); this.lblTarget.AutoSize = true;
 
             // TextBoxes
             this.txtA.Location = new System.Drawing.Point(40, 37); this.txtA.Size = new System.Drawing.Size(120, 20);
@@ -95,20 +117,41 @@
             this.txtX0.Text = "3";
             this.txtF.Text = "x*x - 4*x + 3";
 
+            // Валидация ввода — только числа и знаки
+            this.txtA.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtNumber_KeyPress);
+            this.txtB.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtNumber_KeyPress);
+            this.txtX0.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtNumber_KeyPress);
+            this.txtE.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtPositiveNumber_KeyPress);
+            this.txtA.TextChanged += new System.EventHandler(this.txtNumber_TextChanged);
+            this.txtB.TextChanged += new System.EventHandler(this.txtNumber_TextChanged);
+            this.txtX0.TextChanged += new System.EventHandler(this.txtNumber_TextChanged);
+            this.txtE.TextChanged += new System.EventHandler(this.txtPositiveNumber_TextChanged);
+            this.txtF.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtFormula_KeyPress);
+
+            // ComboBox — тип искомого экстремума
+            this.cmbTarget.Location = new System.Drawing.Point(260, 72);
+            this.cmbTarget.Size = new System.Drawing.Size(180, 21);
+            this.cmbTarget.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbTarget.Items.AddRange(new object[] {
+                "Любой экстремум",
+                "Только минимум",
+                "Только максимум"});
+            this.cmbTarget.SelectedIndex = 0;
+
             // Buttons
             this.btnPlot.Location = new System.Drawing.Point(510, 37);
-            this.btnPlot.Size = new System.Drawing.Size(130, 26);
+            this.btnPlot.Size = new System.Drawing.Size(140, 26);
             this.btnPlot.Text = "Построить график";
             this.btnPlot.UseVisualStyleBackColor = true;
             this.btnPlot.Click += new System.EventHandler(this.btnPlot_Click);
 
-            this.btnCalculate.Location = new System.Drawing.Point(650, 37);
+            this.btnCalculate.Location = new System.Drawing.Point(660, 37);
             this.btnCalculate.Size = new System.Drawing.Size(110, 26);
             this.btnCalculate.Text = "Рассчитать";
             this.btnCalculate.UseVisualStyleBackColor = true;
             this.btnCalculate.Click += new System.EventHandler(this.btnCalculate_Click);
 
-            this.btnClear.Location = new System.Drawing.Point(770, 37);
+            this.btnClear.Location = new System.Drawing.Point(780, 37);
             this.btnClear.Size = new System.Drawing.Size(110, 26);
             this.btnClear.Text = "Очистить";
             this.btnClear.UseVisualStyleBackColor = true;
@@ -134,6 +177,7 @@
             this.Controls.Add(this.lblB); this.Controls.Add(this.txtB);
             this.Controls.Add(this.lblE); this.Controls.Add(this.txtE);
             this.Controls.Add(this.lblX0); this.Controls.Add(this.txtX0);
+            this.Controls.Add(this.lblTarget); this.Controls.Add(this.cmbTarget);
             this.Controls.Add(this.lblF); this.Controls.Add(this.txtF);
             this.Controls.Add(this.btnPlot);
             this.Controls.Add(this.btnCalculate);
