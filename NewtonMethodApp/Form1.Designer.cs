@@ -19,10 +19,6 @@
         private System.Windows.Forms.Label lblA, lblB, lblE, lblX0, lblF, lblTarget;
         private System.Windows.Forms.ComboBox cmbTarget;
 
-        private System.Windows.Forms.Button btnPlot;
-        private System.Windows.Forms.Button btnCalculate;
-        private System.Windows.Forms.Button btnClear;
-
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.RichTextBox rtbLog;
 
@@ -56,14 +52,10 @@
             this.txtF = new System.Windows.Forms.TextBox();
             this.cmbTarget = new System.Windows.Forms.ComboBox();
 
-            this.btnPlot = new System.Windows.Forms.Button();
-            this.btnCalculate = new System.Windows.Forms.Button();
-            this.btnClear = new System.Windows.Forms.Button();
-
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.rtbLog = new System.Windows.Forms.RichTextBox();
 
-            // menuStrip1
+            // menuStrip1 — все действия только здесь
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
                 this.plotMenuItem, this.calcMenuItem,
                 new System.Windows.Forms.ToolStripSeparator(),
@@ -117,7 +109,7 @@
             this.txtX0.Text = "3";
             this.txtF.Text = "x*x - 4*x + 3";
 
-            // Валидация ввода — только числа и знаки
+            // Валидация ввода
             this.txtA.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtNumber_KeyPress);
             this.txtB.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtNumber_KeyPress);
             this.txtX0.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtNumber_KeyPress);
@@ -137,25 +129,6 @@
                 "Только минимум",
                 "Только максимум"});
             this.cmbTarget.SelectedIndex = 0;
-
-            // Buttons
-            this.btnPlot.Location = new System.Drawing.Point(510, 37);
-            this.btnPlot.Size = new System.Drawing.Size(140, 26);
-            this.btnPlot.Text = "Построить график";
-            this.btnPlot.UseVisualStyleBackColor = true;
-            this.btnPlot.Click += new System.EventHandler(this.btnPlot_Click);
-
-            this.btnCalculate.Location = new System.Drawing.Point(660, 37);
-            this.btnCalculate.Size = new System.Drawing.Size(110, 26);
-            this.btnCalculate.Text = "Рассчитать";
-            this.btnCalculate.UseVisualStyleBackColor = true;
-            this.btnCalculate.Click += new System.EventHandler(this.btnCalculate_Click);
-
-            this.btnClear.Location = new System.Drawing.Point(780, 37);
-            this.btnClear.Size = new System.Drawing.Size(110, 26);
-            this.btnClear.Text = "Очистить";
-            this.btnClear.UseVisualStyleBackColor = true;
-            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
 
             // pictureBox1
             this.pictureBox1.Location = new System.Drawing.Point(12, 145);
@@ -179,9 +152,6 @@
             this.Controls.Add(this.lblX0); this.Controls.Add(this.txtX0);
             this.Controls.Add(this.lblTarget); this.Controls.Add(this.cmbTarget);
             this.Controls.Add(this.lblF); this.Controls.Add(this.txtF);
-            this.Controls.Add(this.btnPlot);
-            this.Controls.Add(this.btnCalculate);
-            this.Controls.Add(this.btnClear);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.rtbLog);
             this.MainMenuStrip = this.menuStrip1;

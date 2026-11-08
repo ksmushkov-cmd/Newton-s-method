@@ -8,7 +8,6 @@ namespace NewtonMethodApp
 {
     public partial class Form1 : Form
     {
-        // Точка на траектории метода Ньютона
         private class Step
         {
             public double X;
@@ -21,12 +20,10 @@ namespace NewtonMethodApp
         private Func<double, double> _f = null;
         private bool _plotReady = false;
 
-        // Результат расчёта
         private bool _hasExtremum = false;
         private double _extremumX = double.NaN;
         private string _extremumType = "";
 
-        // Пошаговый просмотр
         private List<Step> _steps = new List<Step>();
         private int _stepIndex = 0;
 
@@ -39,19 +36,12 @@ namespace NewtonMethodApp
         {
             TextBox tb = (TextBox)sender;
             char c = e.KeyChar;
+            if (char.IsControl(c)) return;
 
-            if (char.IsControl(c)) return; // Backspace, Delete и т.п.
-
-            char sep = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0];
-
-            // Минус — только первым символом и только если его ещё нет
             if (c == '-' && tb.SelectionStart == 0 && !tb.Text.Contains("-"))
                 return;
-
-            // Разделитель дробной части — только один
             if ((c == '.' || c == ',') && !tb.Text.Contains(".") && !tb.Text.Contains(","))
                 return;
-
             if (char.IsDigit(c)) return;
 
             e.Handled = true;
@@ -81,7 +71,6 @@ namespace NewtonMethodApp
         {
             TextBox tb = (TextBox)sender;
             string s = tb.Text;
-
             string cleaned = FilterNumber(s);
             if (cleaned != s)
             {
@@ -128,9 +117,9 @@ namespace NewtonMethodApp
             return sb.ToString();
         }
 
-        private bool TryParseCommon(out double a, out double b, out double e, out double x0, out Func<double, double> f)
+        private bool TryParseCommon(out double a, out double b, out double eps, out double x0, out Func<double, double> f)
         {
-            a = b = e = x0 = 0;
+            a = b = eps = x0 = 0;
             f = null;
 
             if (!TryParseDouble(txtA.Text, out a))
@@ -141,10 +130,10 @@ namespace NewtonMethodApp
 
             if (a >= b) { ShowError("Должно выполняться a < b."); return false; }
 
-            if (!TryParseDouble(txtE.Text, out e))
+            if (!TryParseDouble(txtE.Text, out eps))
             { ShowError("Точность 'e' — некорректное вещественное число."); return false; }
 
-            if (e <= 0) { ShowError("Точность 'e' должна быть > 0."); return false; }
+            if (eps <= 0) { ShowError("Точность 'e' должна быть > 0."); return false; }
 
             if (!TryParseDouble(txtX0.Text, out x0))
             { ShowError("Начальное приближение 'x0' — некорректное вещественное число."); return false; }
@@ -216,7 +205,7 @@ namespace NewtonMethodApp
 
                 if (Math.Abs(d2) < 1e-10)
                     throw new InvalidOperationException(
-                        $"f''(x) ≈ 0 в x = {x:F6}. Метод Ньютона неприменим (точка перегиба/седловая).");
+                        $"f''(x) ≈ 0 в x = {x:F6}. Метод Ньютона неприменим.");
 
                 double xNext = x - d1 / d2;
 
@@ -239,44 +228,37 @@ namespace NewtonMethodApp
 
                 if (x < _a - 1e3 * (_b - _a) || x > _b + 1e3 * (_b - _a))
                     throw new InvalidOperationException(
-                        "Метод расходится — точка вышла далеко за [a,b]. Попробуйте другое x0.");
+                        "Метод расходится — точка вышла за [a,b]. Попробуйте другое x0.");
             }
 
             throw new InvalidOperationException("Метод не сошёлся за " + maxIter + " итераций.");
         }
 
-        private void btnPlot_Click(object sender, EventArgs e) => Plot();
-        private void plotMenuItem_Click(object sender, EventArgs e) => Plot();
-
-        private void Plot()
+        private void plotMenuItem_Click(object sender, EventArgs e)
         {
-            if (!TryParseCommon(out double a, out double b, out double e, out double x0, out Func<double, double> f))
+            if (!TryParseCommon(out double a, out double b, out double eps, out double x0, out Func<double, double> f))
                 return;
 
-            _a = a; _b = b; _e = e;
+            _a = a; _b = b; _e = eps;
             _f = f;
             _plotReady = true;
 
-            // Сбрасываем результат предыдущего расчёта
             ResetResult();
 
             rtbLog.Clear();
             rtbLog.AppendText("=== График построен ===\n");
             rtbLog.AppendText($"f(x) = {txtF.Text}\n");
             rtbLog.AppendText($"Интервал: [{a}; {b}]\n");
-            rtbLog.AppendText("Нажмите «Рассчитать», чтобы найти экстремум.\n");
+            rtbLog.AppendText("Теперь: меню «Рассчитать».\n");
 
             pictureBox1.Invalidate();
         }
 
-        private void btnCalculate_Click(object sender, EventArgs e) => Calculate();
-        private void calcMenuItem_Click(object sender, EventArgs e) => Calculate();
-
-        private void Calculate()
+        private void calcMenuItem_Click(object sender, EventArgs e)
         {
             if (!_plotReady || _f == null)
             {
-                ShowError("Сначала постройте график (кнопка «Построить график»).");
+                ShowError("Сначала постройте график (меню «Построить график»).");
                 return;
             }
 
@@ -369,10 +351,7 @@ namespace NewtonMethodApp
             pictureBox1.Invalidate();
         }
 
-        private void btnClear_Click(object sender, EventArgs e) => ClearAll();
-        private void clearMenuItem_Click(object sender, EventArgs e) => ClearAll();
-
-        private void ClearAll()
+        private void clearMenuItem_Click(object sender, EventArgs e)
         {
             _f = null;
             _plotReady = false;
