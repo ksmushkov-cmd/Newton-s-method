@@ -5,10 +5,9 @@
         private System.ComponentModel.IContainer components = null;
 
         private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem plotMenuItem;
         private System.Windows.Forms.ToolStripMenuItem calcMenuItem;
         private System.Windows.Forms.ToolStripMenuItem clearMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem stepMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem resetStepMenuItem;
 
         private System.Windows.Forms.TextBox txtA;
         private System.Windows.Forms.TextBox txtB;
@@ -17,6 +16,7 @@
         private System.Windows.Forms.TextBox txtF;
         private System.Windows.Forms.Label lblA, lblB, lblE, lblX0, lblF;
 
+        private System.Windows.Forms.Button btnPlot;
         private System.Windows.Forms.Button btnCalculate;
         private System.Windows.Forms.Button btnClear;
 
@@ -33,10 +33,9 @@
         private void InitializeComponent()
         {
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.plotMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.calcMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.clearMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.stepMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.resetStepMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 
             this.lblA = new System.Windows.Forms.Label();
             this.lblB = new System.Windows.Forms.Label();
@@ -50,6 +49,7 @@
             this.txtX0 = new System.Windows.Forms.TextBox();
             this.txtF = new System.Windows.Forms.TextBox();
 
+            this.btnPlot = new System.Windows.Forms.Button();
             this.btnCalculate = new System.Windows.Forms.Button();
             this.btnClear = new System.Windows.Forms.Button();
 
@@ -58,12 +58,14 @@
 
             // menuStrip1
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-                this.calcMenuItem, this.clearMenuItem,
-                new System.Windows.Forms.ToolStripSeparator(),
-                this.stepMenuItem, this.resetStepMenuItem});
+                this.plotMenuItem, this.calcMenuItem, this.clearMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(950, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(955, 24);
+
+            this.plotMenuItem.Name = "plotMenuItem";
+            this.plotMenuItem.Text = "Построить график";
+            this.plotMenuItem.Click += new System.EventHandler(this.plotMenuItem_Click);
 
             this.calcMenuItem.Name = "calcMenuItem";
             this.calcMenuItem.Text = "Рассчитать";
@@ -72,16 +74,6 @@
             this.clearMenuItem.Name = "clearMenuItem";
             this.clearMenuItem.Text = "Очистить";
             this.clearMenuItem.Click += new System.EventHandler(this.clearMenuItem_Click);
-
-            this.stepMenuItem.Name = "stepMenuItem";
-            this.stepMenuItem.Text = "Следующий шаг";
-            this.stepMenuItem.Enabled = false;
-            this.stepMenuItem.Click += new System.EventHandler(this.stepMenuItem_Click);
-
-            this.resetStepMenuItem.Name = "resetStepMenuItem";
-            this.resetStepMenuItem.Text = "Сбросить шаги";
-            this.resetStepMenuItem.Enabled = false;
-            this.resetStepMenuItem.Click += new System.EventHandler(this.resetStepMenuItem_Click);
 
             // Labels
             this.lblA.Text = "a:"; this.lblA.Location = new System.Drawing.Point(12, 40); this.lblA.AutoSize = true;
@@ -101,16 +93,22 @@
             this.txtB.Text = "5";
             this.txtE.Text = "0.001";
             this.txtX0.Text = "3";
-            this.txtF.Text = "x*x - 4*x + 3"; 
+            this.txtF.Text = "x*x - 4*x + 3";
 
             // Buttons
-            this.btnCalculate.Location = new System.Drawing.Point(510, 37);
+            this.btnPlot.Location = new System.Drawing.Point(510, 37);
+            this.btnPlot.Size = new System.Drawing.Size(130, 26);
+            this.btnPlot.Text = "Построить график";
+            this.btnPlot.UseVisualStyleBackColor = true;
+            this.btnPlot.Click += new System.EventHandler(this.btnPlot_Click);
+
+            this.btnCalculate.Location = new System.Drawing.Point(650, 37);
             this.btnCalculate.Size = new System.Drawing.Size(110, 26);
             this.btnCalculate.Text = "Рассчитать";
             this.btnCalculate.UseVisualStyleBackColor = true;
             this.btnCalculate.Click += new System.EventHandler(this.btnCalculate_Click);
 
-            this.btnClear.Location = new System.Drawing.Point(510, 69);
+            this.btnClear.Location = new System.Drawing.Point(770, 37);
             this.btnClear.Size = new System.Drawing.Size(110, 26);
             this.btnClear.Text = "Очистить";
             this.btnClear.UseVisualStyleBackColor = true;
@@ -137,6 +135,7 @@
             this.Controls.Add(this.lblE); this.Controls.Add(this.txtE);
             this.Controls.Add(this.lblX0); this.Controls.Add(this.txtX0);
             this.Controls.Add(this.lblF); this.Controls.Add(this.txtF);
+            this.Controls.Add(this.btnPlot);
             this.Controls.Add(this.btnCalculate);
             this.Controls.Add(this.btnClear);
             this.Controls.Add(this.pictureBox1);
